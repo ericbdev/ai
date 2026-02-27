@@ -109,11 +109,7 @@ export class MySkill extends BaseSkill {
 
 ## Examples
 
-Check out the [examples directory](src/examples/) for complete working examples:
-
-- [Text Analysis Example](src/examples/text-analysis-example.ts)
-- [Code Formatter Example](src/examples/code-formatter-example.ts)
-- [Agent Example](src/examples/agent-example.ts)
+Inline snippets above show how to invoke skills and agents directly.
 
 ## Development
 
@@ -145,7 +141,6 @@ src/
 │   ├── SimpleAgent.ts
 │   ├── README.md
 │   └── index.ts
-├── examples/       # Usage examples
 └── index.ts        # Main entry point
 ```
 

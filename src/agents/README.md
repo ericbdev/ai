@@ -154,4 +154,4 @@ interface AgentTask {
 
 ## Examples
 
-See [agent-example.ts](../examples/agent-example.ts) for a complete working example of using agents with skills.
+See the inline usage snippet above for how to use agents with skills.
