@@ -1,7 +1,5 @@
 # Code Formatter Skill
 
-# Code Formatter Skill
-
 ---
 name: code-formatter
 description: Format code snippets, especially JSON and JavaScript, to make them readable. Use whenever a user needs JSON prettified, JS cleaned up, or general whitespace-normalized code output.

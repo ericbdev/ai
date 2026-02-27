@@ -1,25 +1,20 @@
 {
   "name": "@ericbdev/ai",
   "version": "0.1.0",
-  "description": "AI toolkit with skills, agents and prompts",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "description": "AI agent and skill documentation files for GitHub Copilot and other AI assistants",
   "scripts": {
-    "build": "tsc",
-    "test": "echo \"No tests yet\" && exit 0",
-    "lint": "echo \"No linting configured yet\" && exit 0"
+    "build": "echo 'This is a documentation repository - no build needed' && exit 0",
+    "test": "echo 'No tests yet' && exit 0",
+    "lint": "echo 'No linting configured yet' && exit 0"
   },
   "keywords": [
     "ai",
     "skills",
     "agents",
-    "toolkit",
-    "prompts"
+    "copilot",
+    "documentation",
+    "markdown"
   ],
   "author": "ericbdev",
-  "license": "MIT",
-  "devDependencies": {
-    "typescript": "^5.3.0",
-    "@types/node": "^20.0.0"
-  }
+  "license": "MIT"
 }

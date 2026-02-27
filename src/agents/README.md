@@ -1,118 +1,81 @@
 # Agents
 
-Agents are intelligent entities that can use multiple skills to accomplish complex tasks. They can maintain conversation context, execute tasks, and leverage available skills dynamically.
+Agents are documentation-based instructions that define how AI assistants should behave and use multiple skills to accomplish complex tasks. Each agent is defined using markdown files with YAML frontmatter that describe their capabilities, behaviors, and usage patterns.
 
 ## Available Agents
 
-### 1. Simple Agent
+### 1. Base Agent
 
-A basic agent that demonstrates core agent functionality.
+Framework documentation for implementing AI agents with skill management capabilities.
 
-**ID:** `simple-agent`
+See [BaseAgent/AGENT.md](./BaseAgent/AGENT.md) for the complete specification.
+
+**Purpose:** Provides a reference framework for understanding agent structure and creating custom agents.
+
+**Key Concepts:**
+- Skill management (add, remove, query skills)
+- Message processing with conversation context
+- Task execution using available skills
+- Skill selection and matching
+
+### 2. Simple Agent
+
+A basic conversational agent that demonstrates core agent functionality.
+
+See [SimpleAgent/AGENT.md](./SimpleAgent/AGENT.md) for the complete specification.
+
+**Purpose:** General-purpose agent that responds to queries and performs skill-based task execution.
 
 **Capabilities:**
-- Process user messages
+- Process user messages with contextual responses
 - Maintain conversation history
-- Execute tasks using available skills
-- Dynamically select appropriate skills for tasks
-- Respond to basic queries (hello, help, etc.)
+- Execute tasks by selecting appropriate skills
+- Provide help and capability discovery
+- Handle greetings, help requests, and general queries
 
-**Usage:**
+## Agent Structure
 
-```typescript
-import { SimpleAgent, TextAnalysisSkill } from '@ericbdev/ai';
+Agent definitions follow the standard markdown format with YAML frontmatter:
 
-// Create an agent
-const agent = new SimpleAgent();
+```markdown
+---
+name: agent-name
+description: What the agent does and when to use it
+version: 1.0.0
+---
 
-// Add skills
-const textSkill = new TextAnalysisSkill();
-agent.addSkill(textSkill);
+## Overview
+Agent description and purpose
 
-// Chat with the agent
-const response = await agent.processMessage('Hello!');
-console.log(response.content);
+## Capabilities
+What the agent can do
 
-// Execute a task
-const task = {
-  id: 'task-1',
-  description: 'Analyze this text',
-  input: { text: 'Your text here' },
-  status: 'pending' as const,
-};
+## Usage Examples
+How to use the agent
 
-const result = await agent.executeTask(task);
-console.log(result);
+## Configuration
+Agent settings and requirements
 ```
 
-## Agent Interface
+## Core Agent Concepts
 
-All agents implement the `Agent` interface:
+### Message Processing
 
-```typescript
-interface Agent {
-  id: string;
-  name: string;
-  description: string;
-  version: string;
-  skills: Skill[];
-  
-  processMessage(message: string, context?: AgentContext): Promise<AgentMessage>;
-  executeTask(task: AgentTask): Promise<AgentTask>;
-  addSkill(skill: Skill): void;
-  removeSkill(skillId: string): void;
-  getSkills(): Skill[];
-}
-```
+Agents process user messages and generate appropriate responses based on:
+- Message content and intent
+- Conversation history
+- Available skills and capabilities
+- Agent-specific behavior patterns
 
-## Creating Custom Agents
+### Task Execution
 
-To create a custom agent, extend the `BaseAgent` class:
+Agents execute tasks by:
+1. Analyzing the task description
+2. Selecting the most appropriate skill
+3. Executing the skill with provided inputs
+4. Returning results or error information
 
-```typescript
-import { BaseAgent, AgentContext, AgentMessage, AgentTask } from '@ericbdev/ai';
-
-export class MyAgent extends BaseAgent {
-  constructor() {
-    super({
-      id: 'my-agent',
-      name: 'My Custom Agent',
-      description: 'What this agent does',
-      version: '1.0.0',
-      skills: [], // Optional initial skills
-    });
-  }
-
-  public async processMessage(
-    message: string,
-    context?: AgentContext
-  ): Promise<AgentMessage> {
-    // Your message processing logic
-    return {
-      role: 'assistant',
-      content: 'Your response',
-      timestamp: new Date().toISOString(),
-    };
-  }
-
-  public async executeTask(task: AgentTask): Promise<AgentTask> {
-    // Your task execution logic
-    const updatedTask = { ...task };
-    updatedTask.status = 'in-progress';
-    
-    // Process the task...
-    
-    updatedTask.status = 'completed';
-    updatedTask.result = { /* your result */ };
-    
-    return updatedTask;
-  }
-}
-```
-
-## Agent Context
-
-Agents can maintain conversation context:
+### Conversation Context
 
 ```typescript
 interface AgentContext {
@@ -129,9 +92,7 @@ interface AgentMessage {
 }
 ```
 
-## Agent Tasks
-
-Agents execute tasks using their available skills:
+### Task Structure
 
 ```typescript
 interface AgentTask {
@@ -144,14 +105,55 @@ interface AgentTask {
 }
 ```
 
+## Creating Custom Agents
+
+To create a custom agent:
+
+1. **Create an agent directory** in `src/agents/YourAgent/`
+2. **Create an AGENT.md file** with frontmatter and instructions
+3. **Define clear purpose and capabilities** in the overview
+4. **Document behaviors and usage patterns** with examples
+5. **Specify skill requirements** if any
+
+### Example Agent Template
+
+```markdown
+---
+name: my-custom-agent
+description: Brief description of what the agent does and when to use it
+version: 1.0.0
+---
+
+## Overview
+Detailed description of the agent's purpose and functionality
+
+## Capabilities
+- Capability 1
+- Capability 2
+- Capability 3
+
+## Core Behaviors
+Explain how the agent behaves in different scenarios
+
+## Usage Examples
+Provide practical examples of using the agent
+
+## Configuration
+Any settings or requirements
+```
+
 ## Best Practices
 
-1. **Add Relevant Skills**: Only add skills that the agent needs for its specific purpose
-2. **Handle Errors**: Always handle errors gracefully in task execution
-3. **Maintain Context**: Use conversation history to provide contextual responses
-4. **Clear Communication**: Provide clear feedback about task status and results
-5. **Skill Selection**: Implement smart skill selection logic based on task requirements
+1. **Clear Descriptions**: Write clear, trigger-friendly descriptions in frontmatter
+2. **Document Behaviors**: Explicitly describe how agents should respond to different inputs
+3. **Provide Examples**: Include practical usage examples
+4. **Define Scope**: Clearly state what the agent can and cannot do
+5. **Specify Skills**: Document which skills the agent should use
+6. **Version Properly**: Use semantic versioning for agent definitions
 
-## Examples
+## Agent vs Skills
 
-See the inline usage snippet above for how to use agents with skills.
+- **Agents** define high-level behavior patterns and orchestration logic
+- **Skills** define specific capabilities and actionable tasks
+- Agents use multiple skills to accomplish complex goals
+- Skills are reusable across different agents

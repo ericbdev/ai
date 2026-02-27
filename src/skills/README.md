@@ -1,16 +1,24 @@
 # Skills
 
-Skills are reusable capabilities in the AI toolkit. Each skill performs a specific task and can be executed with various inputs.
+Skills are reusable capabilities documented in markdown format following the [GitHub Copilot Skills standard](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/create-skills). Each skill performs a specific task and is documented with YAML frontmatter describing when and how to use it.
+
+## Standard Format
+
+Skills follow the standard `SKILL.md` format with:
+- **YAML frontmatter**: name, description, and optional metadata
+- **Markdown body**: Instructions, examples, and guidelines
+
+See the [GitHub documentation](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/create-skills) for complete details on creating skills.
 
 ## Available Skills
 
 ### 1. Text Analysis Skill
 
-Analyzes text and provides comprehensive insights.
+Analyzes text and provides comprehensive insights including word count, readability, sentiment, and keywords.
 
 See full specification in [TextAnalysisSkill/SKILL.md](./TextAnalysisSkill/SKILL.md).
 
-**ID:** `text-analysis`
+**Trigger**: Use when analyzing text for counts, readability, sentiment, or keyword extraction.
 
 **Capabilities:**
 - Count words, sentences, characters, and paragraphs
@@ -19,80 +27,13 @@ See full specification in [TextAnalysisSkill/SKILL.md](./TextAnalysisSkill/SKILL
 - Basic sentiment analysis (positive/negative/neutral)
 - Extract keywords (optional)
 
-**Input:**
-```typescript
-{
-  text: string;           // Required: The text to analyze
-  includeKeywords?: boolean; // Optional: Extract keywords (default: false)
-}
-```
-
-**Output:**
-```typescript
-{
-  success: boolean;
-  data: {
-    characterCount: number;
-    characterCountNoSpaces: number;
-    wordCount: number;
-    sentenceCount: number;
-    paragraphCount: number;
-    averageWordLength: number;
-    readingTimeMinutes: number;
-    sentiment: 'positive' | 'negative' | 'neutral';
-    keywords?: string[];  // If includeKeywords is true
-  };
-  metadata: {
-    executionTime: number;
-    timestamp: string;
-  };
-}
-```
-
-### 3. Template Skill
-
-Starter SKILL.md you can copy when creating new skills.
-
-See [TemplateSkill/SKILL.md](./TemplateSkill/SKILL.md) for the scaffold structure.
-
-**Example:**
-```typescript
-import { TextAnalysisSkill } from '@ericbdev/ai';
-
-const skill = new TextAnalysisSkill();
-const result = await skill.execute({
-  text: 'This is a great example of text analysis. It works wonderfully!',
-  includeKeywords: true,
-});
-
-console.log(result);
-// {
-//   success: true,
-//   data: {
-//     characterCount: 64,
-//     characterCountNoSpaces: 54,
-//     wordCount: 11,
-//     sentenceCount: 2,
-//     paragraphCount: 1,
-//     averageWordLength: 4.91,
-//     readingTimeMinutes: 1,
-//     sentiment: 'positive',
-//     keywords: ['example', 'analysis', 'works', 'wonderfully', 'great']
-//   },
-//   metadata: {
-//     executionTime: 5,
-//     timestamp: '2026-02-27T02:51:32.209Z'
-//   }
-// }
-```
-
 ### 2. Code Formatter Skill
 
-Formats and beautifies code with support for multiple languages.
+Formats code snippets with dedicated JSON handling, basic JavaScript cleanup, and generic whitespace normalization.
 
 See full specification in [CodeFormatterSkill/SKILL.md](./CodeFormatterSkill/SKILL.md).
 
-**ID:** `code-formatter`
+**Trigger**: Use when formatting code, especially JSON prettification or JavaScript cleanup.
 
 **Capabilities:**
 - Format JSON with proper indentation
@@ -100,114 +41,85 @@ See full specification in [CodeFormatterSkill/SKILL.md](./CodeFormatterSkill/SKI
 - Generic code formatting (whitespace cleanup)
 - Validate JSON syntax
 
-**Input:**
-```typescript
-{
-  code: string;        // Required: The code to format
-  language?: string;   // Optional: Language type (default: 'json')
-  indent?: number;     // Optional: Indentation spaces (default: 2)
-}
+### 3. Template Skill
+
+Starter `SKILL.md` template to use when creating new skills.
+
+See [TemplateSkill/SKILL.md](./TemplateSkill/SKILL.md) for the scaffold structure.
+
+**Purpose**: Provides a complete example following the GitHub Copilot skills standard with all recommended sections.
+
+## Skill File Structure
+
+Each skill should be in its own directory with a `SKILL.md` file:
+
+```
+skills/
+  YourSkill/
+    SKILL.md        # Required: Skill definition
+    script.sh       # Optional: Supporting script
+    examples.md     # Optional: Additional examples
 ```
 
-**Output:**
-```typescript
-{
-  success: boolean;
-  data: {
-    formatted: string;
-    language: string;
-    originalLength: number;
-    formattedLength: number;
-  };
-  metadata: {
-    executionTime: number;
-    timestamp: string;
-  };
-}
-```
+### SKILL.md Format
 
-**Example:**
-```typescript
-import { CodeFormatterSkill } from '@ericbdev/ai';
+```markdown
+---
+name: skill-name
+description: What the skill does and when to use it. This helps Copilot decide when to load the skill.
+---
 
-const skill = new CodeFormatterSkill();
-const result = await skill.execute({
-  code: '{"name":"test","value":123}',
-  language: 'json',
-  indent: 2,
-});
+## Overview
+Brief description
 
-console.log(result.data.formatted);
-// {
-//   "name": "test",
-//   "value": 123
-// }
+## Inputs
+Parameters the skill accepts
+
+## Behavior
+What the skill does
+
+## Output
+What the skill returns
+
+## Example
+Usage example
 ```
 
 ## Creating Custom Skills
 
-To create a custom skill, extend the `BaseSkill` class:
+To create a new skill:
 
-```typescript
-import { BaseSkill, SkillInput, SkillOutput } from '@ericbdev/ai';
+1. **Create a directory** in `src/skills/YourSkill/`
+2. **Copy the template** from [TemplateSkill/SKILL.md](./TemplateSkill/SKILL.md)
+3. **Update the frontmatter** with your skill's name and trigger description
+4. **Document the behavior** clearly in the markdown body
+5. **Add examples** showing how to use the skill
+6. **Include any scripts** the skill needs to execute
 
-export class MyCustomSkill extends BaseSkill {
-  constructor() {
-    super({
-      id: 'my-custom-skill',
-      name: 'My Custom Skill',
-      description: 'Description of what this skill does',
-      version: '1.0.0',
-      tags: ['custom', 'example'],
-      inputSchema: {
-        param1: {
-          type: 'string',
-          description: 'First parameter',
-          required: true,
-        },
-        param2: {
-          type: 'number',
-          description: 'Second parameter',
-          required: false,
-          default: 10,
-        },
-      },
-    });
-  }
+### Frontmatter Guidelines
 
-  protected async run(input: SkillInput): Promise<SkillOutput> {
-    // Implement your skill logic here
-    const result = {
-      // Your processing logic
-    };
+- **name**: Lowercase, use hyphens for spaces (e.g., `my-skill-name`)
+- **description**: Clear, trigger-friendly description that helps Copilot know when to use this skill
+- Include specific keywords and use cases in the description
 
-    return {
-      success: true,
-      data: result,
-    };
-  }
-}
-```
+### Best Practices
 
-## Skill Interface
+1. **Clear Descriptions**: Write descriptions that clearly indicate when the skill should be used
+2. **Complete Documentation**: Document all inputs, outputs, and behaviors
+3. **Provide Examples**: Include practical, working examples
+4. **Keep It Focused**: Each skill should do one thing well
+5. **Follow Standards**: Use the GitHub Copilot skills format
+6. **Version Appropriately**: Track changes with semantic versioning
 
-All skills implement the `Skill` interface:
+## Skills vs Agents
 
-```typescript
-interface Skill {
-  id: string;
-  name: string;
-  description: string;
-  version: string;
-  tags?: string[];
-  inputSchema?: {...};
-  execute(input: SkillInput): Promise<SkillOutput>;
-}
-```
+- **Skills** define specific, actionable capabilities (what can be done)
+- **Agents** define behavior patterns and orchestration (how to do it)
+- Skills are used by agents to accomplish tasks
+- Skills should be reusable across different agents
 
-The `BaseSkill` class provides:
-- Automatic input validation
-- Error handling
-- Execution time tracking
-- Consistent output format
-- Metadata collection
+## Additional Resources
+
+- [GitHub Copilot Skills Documentation](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/create-skills)
+- [About Agent Skills](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills)
+- [Template Skill](./TemplateSkill/SKILL.md) - Complete example following the standard

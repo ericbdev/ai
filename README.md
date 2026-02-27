@@ -1,161 +1,129 @@
-# AI Toolkit
+# AI Agent Files Repository
 
-A comprehensive AI toolkit featuring reusable skills, agents, and prompts for building intelligent applications.
+A repository of agent and skill documentation files for use with AI coding assistants like GitHub Copilot. This repo stores supportive agent files in markdown format following GitHub's standard for agent skills and custom instructions.
 
 ## Overview
 
-This toolkit provides modular, reusable components for AI applications:
+This repository provides documented agents and skills that AI assistants can use to understand how to perform specific tasks:
 
-- **Skills**: Self-contained capabilities that perform specific tasks (text analysis, code formatting, etc.)
-- **Agents**: Intelligent entities that can use multiple skills to accomplish complex tasks
-- **Prompts**: Coming soon - reusable prompt templates
+- **Skills**: Documented capabilities using the [GitHub Copilot Skills standard](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/create-skills)
+- **Agents**: Behavior definitions and orchestration patterns in markdown format
+- **Templates**: Reusable templates for creating new skills and agents
 
-## Installation
+## Structure
 
-```bash
-npm install @ericbdev/ai
 ```
-
-## Quick Start
-
-### Using Skills
-
-```typescript
-import { TextAnalysisSkill } from '@ericbdev/ai';
-
-const skill = new TextAnalysisSkill();
-const result = await skill.execute({
-  text: 'Your text here',
-  includeKeywords: true,
-});
-
-console.log(result);
-```
-
-### Using Agents
-
-```typescript
-import { SimpleAgent, TextAnalysisSkill } from '@ericbdev/ai';
-
-// Create and configure an agent
-const agent = new SimpleAgent();
-agent.addSkill(new TextAnalysisSkill());
-
-// Chat with the agent
-const response = await agent.processMessage('Hello, what can you do?');
-
-// Execute a task
-const task = await agent.executeTask({
-  id: 'task-1',
-  description: 'Analyze this text',
-  input: { text: 'Your text here' },
-  status: 'pending',
-});
+src/
+├── skills/              # Skill documentation (SKILL.md files)
+│   ├── TextAnalysisSkill/
+│   │   └── SKILL.md
+│   ├── CodeFormatterSkill/
+│   │   └── SKILL.md
+│   ├── TemplateSkill/   # Template for new skills
+│   │   └── SKILL.md
+│   └── README.md
+└── agents/              # Agent documentation (AGENT.md files)
+    ├── BaseAgent/
+    │   └── AGENT.md
+    ├── SimpleAgent/
+    │   └── AGENT.md
+    └── README.md
 ```
 
 ## Skills
 
-Skills are the core building blocks of this toolkit. Each skill is a self-contained unit that performs a specific task.
+Skills are documented capabilities that define specific tasks AI assistants can perform. Each skill follows the standard markdown format with YAML frontmatter.
 
 ### Available Skills
 
-1. **Text Analysis Skill** - Analyze text for word count, sentiment, keywords, and more
+1. **Text Analysis Skill** - Analyze text for word count, sentiment, keywords, and readability
 2. **Code Formatter Skill** - Format and beautify code (JSON, JavaScript, etc.)
+3. **Template Skill** - Starter template for creating new skills
 
-See [Skills Documentation](src/skills/README.md) for detailed information about each skill.
+See [Skills Documentation](src/skills/README.md) for complete details.
+
+### Skill Format
+
+```markdown
+---
+name: skill-name
+description: What the skill does and when to use it
+---
+
+## Overview
+Skill description
+
+## Inputs
+Parameters accepted
+
+## Behavior
+What the skill does
+
+## Output
+What the skill returns
+```
 
 ## Agents
 
-Agents are intelligent entities that can use multiple skills to process messages and execute tasks.
+Agents define behavior patterns and how to orchestrate multiple skills to accomplish complex tasks.
 
 ### Available Agents
 
-1. **Simple Agent** - Basic agent with conversation and task execution capabilities
+1. **Base Agent** - Framework documentation for understanding agent structure
+2. **Simple Agent** - Basic conversational agent pattern
 
-See [Agents Documentation](src/agents/README.md) for detailed information about agents.
+See [Agents Documentation](src/agents/README.md) for complete details.
 
-### Creating Custom Skills
+## Creating New Skills
 
-```typescript
-import { BaseSkill, SkillInput, SkillOutput } from '@ericbdev/ai';
+1. Copy the template from `src/skills/TemplateSkill/SKILL.md`
+2. Create a new directory: `src/skills/YourSkill/`
+3. Update the YAML frontmatter with your skill's name and description
+4. Document the skill's behavior, inputs, and outputs
+5. Add usage examples
 
-export class MySkill extends BaseSkill {
-  constructor() {
-    super({
-      id: 'my-skill',
-      name: 'My Custom Skill',
-      description: 'What this skill does',
-      version: '1.0.0',
-      tags: ['custom'],
-      inputSchema: {
-        input1: {
-          type: 'string',
-          description: 'Input description',
-          required: true,
-        },
-      },
-    });
-  }
+## Creating New Agents
 
-  protected async run(input: SkillInput): Promise<SkillOutput> {
-    // Your implementation
-    return {
-      success: true,
-      data: { /* your result */ },
-    };
-  }
-}
-```
+1. Create a new directory: `src/agents/YourAgent/`
+2. Create an `AGENT.md` file with YAML frontmatter
+3. Document the agent's purpose, capabilities, and behaviors
+4. Provide usage examples and patterns
 
-## Examples
+## Standards
 
-Inline snippets above show how to invoke skills and agents directly.
+This repository follows these standards:
+
+- [GitHub Copilot Skills Format](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/create-skills)
+- [About Agent Skills](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills)
+- Markdown with YAML frontmatter for all documentation
+- Clear, trigger-friendly descriptions in frontmatter
 
 ## Development
 
-### Setup
+### Prerequisites
+
+This is a documentation repository - no build tools are required. All files are markdown.
+
+### Testing Documentation
+
+To verify markdown files:
 
 ```bash
-# Install dependencies
-npm install
-
-# Build the project
-npm run build
-```
-
-### Project Structure
-
-```
-src/
-├── types/          # TypeScript type definitions
-│   ├── skill.ts    # Skill interface and types
-│   └── agent.ts    # Agent interface and types
-├── skills/         # Skill implementations
-│   ├── BaseSkill.ts
-│   ├── TextAnalysisSkill.ts
-│   ├── CodeFormatterSkill.ts
-│   ├── README.md
-│   └── index.ts
-├── agents/         # Agent implementations
-│   ├── BaseAgent.ts
-│   ├── SimpleAgent.ts
-│   ├── README.md
-│   └── index.ts
-└── index.ts        # Main entry point
+npm test   # Runs basic validation
+npm run lint  # Checks markdown formatting
 ```
 
 ## Roadmap
 
-- [x] Core skill interface and base class
-- [x] Text analysis skill
-- [x] Code formatter skill
-- [x] Core agent interface and base class
-- [x] Simple agent implementation
-- [ ] More skills (summarization, translation, etc.)
-- [ ] Advanced agents with planning capabilities
-- [ ] Prompt templates
-- [ ] CLI tool
-- [ ] Web UI for skill testing
+- [x] Text analysis skill documentation
+- [x] Code formatter skill documentation
+- [x] Template skill scaffold
+- [x] Base agent framework documentation
+- [x] Simple agent pattern documentation
+- [ ] Additional skill documentation (summarization, translation, etc.)
+- [ ] Advanced agent patterns with planning
+- [ ] Prompt templates library
+- [ ] Workflow automation skills
 
 ## License
 
@@ -163,4 +131,11 @@ MIT
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! When adding new skills or agents:
+
+1. Follow the standard markdown format with YAML frontmatter
+2. Provide clear, trigger-friendly descriptions
+3. Include practical usage examples
+4. Document all behaviors and capabilities
+
+Please feel free to submit a Pull Request.
