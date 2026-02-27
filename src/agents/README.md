@@ -8,7 +8,7 @@ Agents are documentation-based instructions that define how AI assistants should
 
 Framework documentation for implementing AI agents with skill management capabilities.
 
-See [BaseAgent/AGENT.md](./BaseAgent/AGENT.md) for the complete specification.
+See [base-agent/AGENT.md](./base-agent/AGENT.md) for the complete specification.
 
 **Purpose:** Provides a reference framework for understanding agent structure and creating custom agents.
 
@@ -22,7 +22,7 @@ See [BaseAgent/AGENT.md](./BaseAgent/AGENT.md) for the complete specification.
 
 A basic conversational agent that demonstrates core agent functionality.
 
-See [SimpleAgent/AGENT.md](./SimpleAgent/AGENT.md) for the complete specification.
+See [simple-agent/AGENT.md](./simple-agent/AGENT.md) for the complete specification.
 
 **Purpose:** General-purpose agent that responds to queries and performs skill-based task execution.
 
@@ -109,7 +109,7 @@ interface AgentTask {
 
 To create a custom agent:
 
-1. **Create an agent directory** in `src/agents/YourAgent/`
+1. **Create an agent directory** in `src/agents/your-agent/`
 2. **Create an AGENT.md file** with frontmatter and instructions
 3. **Define clear purpose and capabilities** in the overview
 4. **Document behaviors and usage patterns** with examples

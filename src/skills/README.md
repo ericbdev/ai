@@ -16,7 +16,7 @@ See the [GitHub documentation](https://docs.github.com/en/copilot/how-tos/use-co
 
 Analyzes text and provides comprehensive insights including word count, readability, sentiment, and keywords.
 
-See full specification in [TextAnalysisSkill/SKILL.md](./TextAnalysisSkill/SKILL.md).
+See full specification in [text-analysis-skill/SKILL.md](./text-analysis-skill/SKILL.md).
 
 **Trigger**: Use when analyzing text for counts, readability, sentiment, or keyword extraction.
 
@@ -31,7 +31,7 @@ See full specification in [TextAnalysisSkill/SKILL.md](./TextAnalysisSkill/SKILL
 
 Formats code snippets with dedicated JSON handling, basic JavaScript cleanup, and generic whitespace normalization.
 
-See full specification in [CodeFormatterSkill/SKILL.md](./CodeFormatterSkill/SKILL.md).
+See full specification in [code-formatter-skill/SKILL.md](./code-formatter-skill/SKILL.md).
 
 **Trigger**: Use when formatting code, especially JSON prettification or JavaScript cleanup.
 
@@ -45,7 +45,7 @@ See full specification in [CodeFormatterSkill/SKILL.md](./CodeFormatterSkill/SKI
 
 Starter `SKILL.md` template to use when creating new skills.
 
-See [TemplateSkill/SKILL.md](./TemplateSkill/SKILL.md) for the scaffold structure.
+See [template-skill/SKILL.md](./template-skill/SKILL.md) for the scaffold structure.
 
 **Purpose**: Provides a complete example following the GitHub Copilot skills standard with all recommended sections.
 
@@ -55,7 +55,7 @@ Each skill should be in its own directory with a `SKILL.md` file:
 
 ```
 skills/
-  YourSkill/
+  your-skill/
     SKILL.md        # Required: Skill definition
     script.sh       # Optional: Supporting script
     examples.md     # Optional: Additional examples
@@ -89,8 +89,8 @@ Usage example
 
 To create a new skill:
 
-1. **Create a directory** in `src/skills/YourSkill/`
-2. **Copy the template** from [TemplateSkill/SKILL.md](./TemplateSkill/SKILL.md)
+1. **Create a directory** in `src/skills/your-skill/`
+2. **Copy the template** from [template-skill/SKILL.md](./template-skill/SKILL.md)
 3. **Update the frontmatter** with your skill's name and trigger description
 4. **Document the behavior** clearly in the markdown body
 5. **Add examples** showing how to use the skill
@@ -122,4 +122,4 @@ To create a new skill:
 
 - [GitHub Copilot Skills Documentation](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/create-skills)
 - [About Agent Skills](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills)
-- [Template Skill](./TemplateSkill/SKILL.md) - Complete example following the standard
+- [Template Skill](./template-skill/SKILL.md) - Complete example following the standard

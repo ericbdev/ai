@@ -104,9 +104,9 @@ The agent is initialized with:
 ## Adding Skills
 
 ```typescript
-import { SimpleAgent } from './SimpleAgent';
-import { TextAnalysisSkill } from '../skills/TextAnalysisSkill';
-import { CodeFormatterSkill } from '../skills/CodeFormatterSkill';
+import { SimpleAgent } from './simple-agent';
+import { TextAnalysisSkill } from '../skills/text-analysis-skill';
+import { CodeFormatterSkill } from '../skills/code-formatter-skill';
 
 const agent = new SimpleAgent();
 

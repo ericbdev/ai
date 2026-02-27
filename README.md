@@ -15,17 +15,17 @@ This repository provides documented agents and skills that AI assistants can use
 ```
 src/
 ├── skills/              # Skill documentation (SKILL.md files)
-│   ├── TextAnalysisSkill/
+│   ├── text-analysis-skill/
 │   │   └── SKILL.md
-│   ├── CodeFormatterSkill/
+│   ├── code-formatter-skill/
 │   │   └── SKILL.md
-│   ├── TemplateSkill/   # Template for new skills
+│   ├── template-skill/   # Template for new skills
 │   │   └── SKILL.md
 │   └── README.md
 └── agents/              # Agent documentation (AGENT.md files)
-    ├── BaseAgent/
+    ├── base-agent/
     │   └── AGENT.md
-    ├── SimpleAgent/
+    ├── simple-agent/
     │   └── AGENT.md
     └── README.md
 ```
@@ -76,15 +76,15 @@ See [Agents Documentation](src/agents/README.md) for complete details.
 
 ## Creating New Skills
 
-1. Copy the template from `src/skills/TemplateSkill/SKILL.md`
-2. Create a new directory: `src/skills/YourSkill/`
+1. Copy the template from `src/skills/template-skill/SKILL.md`
+2. Create a new directory: `src/skills/your-skill/`
 3. Update the YAML frontmatter with your skill's name and description
 4. Document the skill's behavior, inputs, and outputs
 5. Add usage examples
 
 ## Creating New Agents
 
-1. Create a new directory: `src/agents/YourAgent/`
+1. Create a new directory: `src/agents/your-agent/`
 2. Create an `AGENT.md` file with YAML frontmatter
 3. Document the agent's purpose, capabilities, and behaviors
 4. Provide usage examples and patterns
