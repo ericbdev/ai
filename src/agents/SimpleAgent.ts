@@ -1,5 +1,6 @@
 import { BaseAgent } from './BaseAgent';
 import { AgentContext, AgentMessage, AgentTask } from '../types/agent';
+import { Skill } from '../types/skill';
 
 /**
  * SimpleAgent - A basic agent that can use skills to accomplish tasks
@@ -111,7 +112,7 @@ export class SimpleAgent extends BaseAgent {
   /**
    * Find the best skill for a task description
    */
-  private findBestSkill(description: string): any {
+  private findBestSkill(description: string): Skill | undefined {
     const lowerDescription = description.toLowerCase();
 
     // Simple keyword matching
