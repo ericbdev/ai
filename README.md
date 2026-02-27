@@ -6,8 +6,8 @@ A comprehensive AI toolkit featuring reusable skills, agents, and prompts for bu
 
 This toolkit provides modular, reusable components for AI applications:
 
-- **Skills**: Self-contained capabilities that perform specific tasks
-- **Agents**: Coming soon - intelligent entities that can use multiple skills
+- **Skills**: Self-contained capabilities that perform specific tasks (text analysis, code formatting, etc.)
+- **Agents**: Intelligent entities that can use multiple skills to accomplish complex tasks
 - **Prompts**: Coming soon - reusable prompt templates
 
 ## Installation
@@ -17,6 +17,8 @@ npm install @ericbdev/ai
 ```
 
 ## Quick Start
+
+### Using Skills
 
 ```typescript
 import { TextAnalysisSkill } from '@ericbdev/ai';
@@ -30,6 +32,27 @@ const result = await skill.execute({
 console.log(result);
 ```
 
+### Using Agents
+
+```typescript
+import { SimpleAgent, TextAnalysisSkill } from '@ericbdev/ai';
+
+// Create and configure an agent
+const agent = new SimpleAgent();
+agent.addSkill(new TextAnalysisSkill());
+
+// Chat with the agent
+const response = await agent.processMessage('Hello, what can you do?');
+
+// Execute a task
+const task = await agent.executeTask({
+  id: 'task-1',
+  description: 'Analyze this text',
+  input: { text: 'Your text here' },
+  status: 'pending',
+});
+```
+
 ## Skills
 
 Skills are the core building blocks of this toolkit. Each skill is a self-contained unit that performs a specific task.
@@ -40,6 +63,16 @@ Skills are the core building blocks of this toolkit. Each skill is a self-contai
 2. **Code Formatter Skill** - Format and beautify code (JSON, JavaScript, etc.)
 
 See [Skills Documentation](src/skills/README.md) for detailed information about each skill.
+
+## Agents
+
+Agents are intelligent entities that can use multiple skills to process messages and execute tasks.
+
+### Available Agents
+
+1. **Simple Agent** - Basic agent with conversation and task execution capabilities
+
+See [Agents Documentation](src/agents/README.md) for detailed information about agents.
 
 ### Creating Custom Skills
 
@@ -80,6 +113,7 @@ Check out the [examples directory](src/examples/) for complete working examples:
 
 - [Text Analysis Example](src/examples/text-analysis-example.ts)
 - [Code Formatter Example](src/examples/code-formatter-example.ts)
+- [Agent Example](src/examples/agent-example.ts)
 
 ## Development
 
@@ -98,14 +132,19 @@ npm run build
 ```
 src/
 ├── types/          # TypeScript type definitions
-│   └── skill.ts    # Skill interface and types
+│   ├── skill.ts    # Skill interface and types
+│   └── agent.ts    # Agent interface and types
 ├── skills/         # Skill implementations
 │   ├── BaseSkill.ts
 │   ├── TextAnalysisSkill.ts
 │   ├── CodeFormatterSkill.ts
 │   ├── README.md
 │   └── index.ts
-├── agents/         # Agent implementations (coming soon)
+├── agents/         # Agent implementations
+│   ├── BaseAgent.ts
+│   ├── SimpleAgent.ts
+│   ├── README.md
+│   └── index.ts
 ├── examples/       # Usage examples
 └── index.ts        # Main entry point
 ```
@@ -115,8 +154,10 @@ src/
 - [x] Core skill interface and base class
 - [x] Text analysis skill
 - [x] Code formatter skill
-- [ ] Agent framework
+- [x] Core agent interface and base class
+- [x] Simple agent implementation
 - [ ] More skills (summarization, translation, etc.)
+- [ ] Advanced agents with planning capabilities
 - [ ] Prompt templates
 - [ ] CLI tool
 - [ ] Web UI for skill testing
