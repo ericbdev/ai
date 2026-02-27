@@ -1,0 +1,25 @@
+{
+  "name": "@ericbdev/ai",
+  "version": "0.1.0",
+  "description": "AI toolkit with skills, agents and prompts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"No tests yet\" && exit 0",
+    "lint": "echo \"No linting configured yet\" && exit 0"
+  },
+  "keywords": [
+    "ai",
+    "skills",
+    "agents",
+    "toolkit",
+    "prompts"
+  ],
+  "author": "ericbdev",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.3.0",
+    "@types/node": "^20.0.0"
+  }
+}
