@@ -1,5 +1,5 @@
-import { BaseSkill } from './BaseSkill';
-import { SkillInput, SkillOutput } from '../types/skill';
+import { BaseSkill } from '../BaseSkill';
+import { SkillInput, SkillOutput } from '../../types/skill';
 
 /**
  * CodeFormatterSkill - Formats and beautifies code

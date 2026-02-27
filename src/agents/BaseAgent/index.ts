@@ -1,5 +1,5 @@
-import { Agent, AgentContext, AgentMessage, AgentTask } from '../types/agent';
-import { Skill } from '../types/skill';
+import { Agent, AgentContext, AgentMessage, AgentTask } from '../../types/agent';
+import { Skill } from '../../types/skill';
 
 /**
  * Abstract base class for implementing agents

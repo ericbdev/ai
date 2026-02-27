@@ -1,4 +1,4 @@
-import { Skill, SkillInput, SkillOutput } from '../types/skill';
+import { Skill, SkillInput, SkillOutput } from '../../types/skill';
 
 /**
  * Abstract base class for implementing skills

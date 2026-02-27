@@ -1,6 +1,6 @@
-import { BaseAgent } from './BaseAgent';
-import { AgentContext, AgentMessage, AgentTask } from '../types/agent';
-import { Skill } from '../types/skill';
+import { BaseAgent } from '../BaseAgent';
+import { AgentContext, AgentMessage, AgentTask } from '../../types/agent';
+import { Skill } from '../../types/skill';
 
 /**
  * SimpleAgent - A basic agent that can use skills to accomplish tasks
