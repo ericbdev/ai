@@ -49,6 +49,12 @@ See full specification in [TextAnalysisSkill/SKILL.md](./TextAnalysisSkill/SKILL
 }
 ```
 
+### 3. Template Skill
+
+Starter SKILL.md you can copy when creating new skills.
+
+See [TemplateSkill/SKILL.md](./TemplateSkill/SKILL.md) for the scaffold structure.
+
 **Example:**
 ```typescript
 import { TextAnalysisSkill } from '@ericbdev/ai';
