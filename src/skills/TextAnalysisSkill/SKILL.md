@@ -1,5 +1,12 @@
 # Text Analysis Skill
 
+# Text Analysis Skill
+
+---
+name: text-analysis
+description: Analyze user-provided text for counts, readability, sentiment, and keywords. Use whenever a user asks for text stats, readability estimates, keyword extraction, or quick sentiment on prose, notes, or docs.
+---
+
 ## Overview
 Analyzes text and returns basic statistics, sentiment, and optional keyword extraction for quick text insights.
 
