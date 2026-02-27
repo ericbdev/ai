@@ -8,6 +8,8 @@ Skills are reusable capabilities in the AI toolkit. Each skill performs a specif
 
 Analyzes text and provides comprehensive insights.
 
+See full specification in [TextAnalysisSkill/SKILL.md](./TextAnalysisSkill/SKILL.md).
+
 **ID:** `text-analysis`
 
 **Capabilities:**
@@ -81,6 +83,8 @@ console.log(result);
 ### 2. Code Formatter Skill
 
 Formats and beautifies code with support for multiple languages.
+
+See full specification in [CodeFormatterSkill/SKILL.md](./CodeFormatterSkill/SKILL.md).
 
 **ID:** `code-formatter`
 
