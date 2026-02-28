@@ -67,9 +67,13 @@ The execution logic is located in `scripts/address-reviews.js`.
    - Review the fuzzy match suggestions (e.g., "identifer" → "identifier", distance: 1).
    - Is it fixing a typo? Verify the intended symbol exists in context.
    - Does it adhere to SOLID principles and maintain the code's expected behavior and type contracts?
-   - Is it actionable and in scope?
+ - Is it actionable and in scope?
 6. Provide your analysis as a JSON response.
 7. The skill will apply patches and prompt for verification.
+
+### Fetching online review threads from CLI/API
+- Use GitHub CLI directly: `gh pr view <pr-number> --json reviewThreads,reviews,comments` (uses your existing GitHub auth; no third-party tooling).
+- REST fallback via the CLI: `gh api repos/:owner/:repo/pulls/:number/reviews` plus `gh api repos/:owner/:repo/pulls/:number/comments` (add `--paginate` if needed). Both return the same online review content shown in the PR UI.
 
 ## Levenshtein Distance
 
