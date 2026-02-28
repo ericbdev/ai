@@ -352,12 +352,14 @@ async function analyzeThread(thread, context, fuzzyMatches = []) {
  */
 function applyLocalFix(filePath, patch) {
   try {
-    // For now, just log that the patch was applied
-    // In production, use a proper diff/patch library to intelligently apply changes
-    console.log(`[APPLIED] Patch applied to ${filePath}\n`);
-    // TODO: Implement intelligent patching (diff-match-patch, etc.)
+    const patchPath = `${filePath}.patch`;
+    fs.writeFileSync(patchPath, patch, { encoding: "utf8" });
+    console.log(
+      `[PENDING] Patch for ${filePath} written to ${patchPath}. ` +
+      "Please review and apply this patch manually.\n"
+    );
   } catch (err) {
-    console.error(`Error applying patch: ${err.message}`);
+    console.error(`Error applying patch to ${filePath}: ${err.message}`);
   }
 }
 
