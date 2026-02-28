@@ -303,8 +303,8 @@ function findFuzzySymbolMatches(tokens, symbols) {
 async function analyzeThread(thread, context, fuzzyMatches = []) {
   console.log(
     "[LLM Analysis Required]\n" +
-    "Using Liskov Substitution Principle, determine if this feedback is actionable.\n" +
-    "Consider: typos, symbol existence, function contracts, scope.\n"
+    "Using SOLID principles, determine if this feedback is actionable.\n" +
+    "Consider: typos, symbol existence, single responsibility, open/closed, dependency inversion, function contracts, and scope.\n"
   );
 
   if (fuzzyMatches.length > 0) {

@@ -1,6 +1,6 @@
 ---
 name: address-pr-reviews
-description: Pulls GitHub PR reviews, resolves ambiguities with Liskov substitution and Levenshtein distance, and applies code fixes or drafts empathetic replies locally.
+description: Pulls GitHub PR reviews, resolves ambiguities using SOLID principles and Levenshtein distance, and applies code fixes or drafts empathetic replies locally.
 author: Eric
 version: 1.1.0
 config:
@@ -13,7 +13,7 @@ config:
 
 # Address PR Reviews
 
-This skill automates the process of addressing feedback on an open Pull Request. It prioritizes code integrity by analyzing surrounding symbols to resolve reviewer typos (Liskov Substitution + Levenshtein Distance) and handles problematic feedback by drafting clarifying questions.
+This skill automates the process of addressing feedback on an open Pull Request. It prioritizes code integrity by analyzing surrounding symbols to resolve reviewer typos (SOLID Principles + Levenshtein Distance) and handles problematic feedback by drafting clarifying questions.
 
 ## Usage
 1. Ensure you are in a git repository with an open PR.
@@ -28,7 +28,7 @@ For each review thread, you (the invoking LLM) must determine:
 
 ### Actionable Feedback
 - The suggestion improves code quality, correctness, or clarity.
-- The fix maintains the function/object contract (Liskov Substitution).
+- The fix adheres to SOLID principles (e.g., single responsibility, open/closed, dependency inversion) and maintains the function's expected behavior and type contracts.
 - If the reviewer has a typo (e.g., "identifer" instead of "identifier"), use **Levenshtein Distance** to fuzzy-match against actual code symbols and infer the correct intent.
 - The change is within the scope of this PR.
 
@@ -66,7 +66,7 @@ The execution logic is located in `scripts/address-reviews.js`.
 5. Analyze the feedback:
    - Review the fuzzy match suggestions (e.g., "identifer" → "identifier", distance: 1).
    - Is it fixing a typo? Verify the intended symbol exists in context.
-   - Does it maintain the code's type/function contract?
+   - Does it adhere to SOLID principles and maintain the code's expected behavior and type contracts?
    - Is it actionable and in scope?
 6. Provide your analysis as a JSON response.
 7. The skill will apply patches and prompt for verification.
