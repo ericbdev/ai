@@ -102,6 +102,7 @@ async function run() {
 function extractThreads(reviews) {
   const threads = [];
   for (const review of reviews) {
+    if (!review || !Array.isArray(review.comments)) continue;
     for (const comment of review.comments) {
       if (comment.state === "RESOLVED" || !comment.body) continue;
       threads.push({
