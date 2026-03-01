@@ -1,0 +1,94 @@
+{
+  "skill_name": "address-pr-reviews",
+  "evals": [
+    {
+      "id": 1,
+      "name": "simple-typo-detection",
+      "prompt": "I have an open PR and received a review comment saying 'The identifer field should be validated before use'. The code nearby has an 'identifier' field. Analyze this review and tell me if it's actionable.",
+      "expected_output": "The skill should detect that 'identifer' is a typo for 'identifier' using Levenshtein distance (distance 1), recognize this as actionable feedback, and provide guidance on how to validate the field.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "typo_detected",
+          "description": "Skill correctly identifies 'identifer' as a typo for 'identifier' with Levenshtein distance detection"
+        },
+        {
+          "name": "actionable_classification",
+          "description": "Feedback is correctly classified as actionable (improves code quality)"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "out-of-scope-feedback",
+      "prompt": "A reviewer on my small PR that fixes a button color says 'You should refactor the entire component system to use a design tokens library'. Should I address this feedback?",
+      "expected_output": "The skill should recognize this as out-of-scope feedback (architectural change on a small cosmetic PR) and recommend drafting a clarification reply rather than applying the fix.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "scope_evaluation",
+          "description": "Skill correctly identifies the feedback as out-of-scope"
+        },
+        {
+          "name": "problematic_classification",
+          "description": "Feedback is correctly classified as problematic, not actionable"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "dip-violation-detection",
+      "prompt": "A reviewer on my PR suggests that instead of hardcoding `new ConsoleLogger()` in the constructor, I should inject it as a dependency. The current code has: `this.logger = new ConsoleLogger()`. Should I apply this change? It seems like it would just add an extra parameter.",
+      "expected_output": "The skill should recognize this follows Dependency Inversion Principle better, explain why (loose coupling, testability), acknowledge the tradeoff (adds constructor parameter), and recommend the change while explaining the real-world benefits.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "dip_violation_detected",
+          "description": "Skill identifies hardcoded dependency as violating Dependency Inversion Principle"
+        },
+        {
+          "name": "improvement_suggested",
+          "description": "Suggestion includes dependency injection pattern as the refactored approach"
+        },
+        {
+          "name": "tradeoff_acknowledged",
+          "description": "Response acknowledges added complexity vs. improved testability and flexibility"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "multiple-typos",
+      "prompt": "A reviewer writes: 'In the getUserName function, change the parametr to usr_object and update the identifer reference'. There are typos in 'parametr' (should be 'parameter') and 'identifer' (should be 'identifier'). How should I interpret this feedback?",
+      "expected_output": "The skill should detect multiple typos using Levenshtein distance and help understand the reviewer's true intent despite the spelling errors.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "multiple_typos_detected",
+          "description": "Multiple typos are detected: parametr, identifer"
+        },
+        {
+          "name": "intent_inference",
+          "description": "Skill infers the reviewer likely meant 'parameter' and 'identifier' based on Levenshtein distance"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "vague-feedback-handling",
+      "prompt": "A reviewer just says 'This doesn't seem right' without any specific suggestions. How should I handle this?",
+      "expected_output": "The skill should recognize this as vague, unhelpful feedback and recommend drafting a professional, empathetic question asking for more specific feedback.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "vague_feedback_detected",
+          "description": "Skill identifies feedback as vague and uninformative"
+        },
+        {
+          "name": "empathetic_reply_drafted",
+          "description": "Skill drafts a professional clarification question"
+        }
+      ]
+    }
+  ]
+}
