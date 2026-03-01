@@ -16,8 +16,5 @@
     "markdown"
   ],
   "author": "ericbdev",
-  "license": "MIT",
-  "dependencies": {
-    "diff-match-patch": "^1.0.5"
-  }
+  "license": "MIT"
 }
