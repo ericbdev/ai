@@ -80,13 +80,7 @@ async function run() {
       }
     }
 
-    const testCmd = await rl.question(
-      "All threads reviewed. Enter test command (e.g., npm test) or Enter to skip: "
-    );
-    if (testCmd.trim()) {
-      console.log("\n--- Running Verification ---\n");
-      execSync(testCmd, { stdio: "inherit" });
-    }
+    console.log("\n  All threads reviewed.");
 
     console.log("\n✓ Skill execution complete.");
   } catch (err) {
