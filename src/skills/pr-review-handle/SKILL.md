@@ -57,6 +57,38 @@ For each review thread, you (the invoking LLM) must determine:
 ## Script
 The execution logic is located in `scripts/address-reviews.js`.
 
+### Implementation Details
+
+The script uses `gh api` extensively for direct REST API access, providing:
+- **Granular control**: Fetch specific data from different endpoints
+- **Pagination support**: Automatically handle large result sets with `--paginate`
+- **Better metadata**: Access review state, timestamps, diff hunks, and more
+- **Efficient fetching**: Query only the data needed for analysis
+
+#### API Endpoints Used
+
+1. **Pull Request Reviews** (`gh api repos/{owner}/{repo}/pulls/{pr}/reviews`)
+   - Fetches review-level data including state (APPROVED, CHANGES_REQUESTED, COMMENTED)
+   - Provides reviewer information and overall review metadata
+   - Supports pagination for PRs with many reviews
+
+2. **Review Comments** (`gh api repos/{owner}/{repo}/pulls/{pr}/comments`)
+   - Fetches line-specific code comments with file paths and line numbers
+   - Includes diff hunks for context
+   - Provides threading information (in_reply_to_id) for conversation tracking
+   - Supports pagination for large review threads
+
+3. **PR Information** (`gh pr view --json number,url`)
+   - Gets basic PR metadata to identify which PR to analyze
+
+#### Advantages over `gh pr view`
+
+- Direct REST API access provides richer data structures
+- Pagination ensures all comments are fetched (no truncation)
+- More control over filtering and data processing
+- Better support for resolving ambiguities with additional context fields
+- Can be extended to post comments/reviews back to GitHub
+
 ## Workflow for the Invoking LLM
 
 1. Extract each review thread (file, line, comment body).
@@ -70,6 +102,26 @@ The execution logic is located in `scripts/address-reviews.js`.
    - Is it actionable and in scope?
 6. Provide your analysis as a JSON response.
 7. The skill will apply patches and prompt for verification.
+
+### Fetching Review Threads with gh api
+
+The skill leverages `gh api` for direct GitHub REST API access:
+
+**Primary Method (Recommended):**
+```bash
+# Fetch all reviews with pagination
+gh api repos/{owner}/{repo}/pulls/{pr_number}/reviews --paginate
+
+# Fetch all review comments (line-specific) with pagination
+gh api repos/{owner}/{repo}/pulls/{pr_number}/comments --paginate
+```
+
+**Why gh api?**
+- **Pagination**: Use `--paginate` to automatically fetch all pages of results
+- **Rich Metadata**: Access fields like `diff_hunk`, `position`, `in_reply_to_id`, review state
+- **No Third-Party Tools**: Uses your existing GitHub authentication
+- **REST API Standard**: Direct access to documented GitHub API endpoints
+- **Scriptable**: Easy to parse JSON responses and filter data programmatically
 
 ## Levenshtein Distance
 

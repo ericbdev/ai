@@ -1,6 +1,7 @@
 import { execSync } from "node:child_process";
 import fs from "node:fs";
 import readline from "node:readline/promises";
+import DiffMatchPatch from "diff-match-patch";
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -10,19 +11,38 @@ const rl = readline.createInterface({
 /** Levenshtein distance threshold for fuzzy symbol matching */
 const LEVENSHTEIN_THRESHOLD = 3;
 
+// Extract bare camelCase, snake_case, or dot-notation tokens outside backticks
+const barePattern =
+  /(?:^|[^A-Za-z0-9_$])([a-zA-Z_$][a-zA-Z0-9_$]*(?:\.[a-zA-Z_$][a-zA-Z0-9_$]*)*)(?=$|[^A-Za-z0-9_$])/g;
+
 /**
  * Skill: Address PR Reviews (Self-contained)
  * The invoking LLM analyzes threads and provides decisions inline.
+ *
+ * Uses `gh api` extensively for direct REST API access with better control.
  */
 async function run() {
   try {
-    console.log("--- Fetching PR Reviews ---\n");
-    const prRaw = execSync("gh pr view --json reviews,number,url", {
+    console.log("--- Fetching PR Reviews via gh api ---\n");
+
+    // First, get the current PR number using gh pr view
+    const prInfoRaw = execSync("gh pr view --json number,url", {
       encoding: "utf8",
     });
-    const pr = JSON.parse(prRaw);
+    const prInfo = JSON.parse(prInfoRaw);
+    const prNumber = prInfo.number;
 
-    const threads = extractThreads(pr.reviews);
+    console.log(`Analyzing PR #${prNumber}: ${prInfo.url}\n`);
+
+    // Fetch reviews using gh api with pagination support
+    const reviews = fetchPRReviews(prNumber);
+
+    // Fetch review comments (line-specific comments) using gh api
+    const reviewComments = fetchPRReviewComments(prNumber);
+
+    // Combine and extract threads from both sources
+    const threads = extractThreadsFromAPI(reviews, reviewComments);
+
     if (threads.length === 0) {
       console.log("No unresolved review threads found.");
       rl.close();
@@ -44,10 +64,12 @@ async function run() {
       console.log(`Context:\n${context}\n`);
 
       if (fuzzyMatches.length > 0) {
-        console.log(`[Levenshtein Analysis] Possible typos detected in review comment:`);
+        console.log(
+          `[Levenshtein Analysis] Possible typos detected in review comment:`,
+        );
         for (const match of fuzzyMatches) {
           console.log(
-            `  "${match.token}" → "${match.symbol}" (distance: ${match.distance})`
+            `  "${match.token}" → "${match.symbol}" (distance: ${match.distance})`,
           );
         }
         console.log();
@@ -69,10 +91,10 @@ async function run() {
         }
       } else {
         console.log(`[FLAGGED] Feedback is out-of-scope or unclear.`);
-        console.log(`\nEmpathetic Draft Reply:\n"${analysis.empatheticReply}"\n`);
-        const action = await rl.question(
-          "Copy to clipboard? (y/n): "
+        console.log(
+          `\nEmpathetic Draft Reply:\n"${analysis.empatheticReply}"\n`,
         );
+        const action = await rl.question("Copy to clipboard? (y/n): ");
         if (action.toLowerCase() === "y") {
           copyToClipboard(analysis.empatheticReply);
           console.log("(Copied)\n");
@@ -91,16 +113,97 @@ async function run() {
 }
 
 /**
- * Extract unresolved threads from PR reviews
+ * Fetch PR reviews using gh api directly
+ * Provides access to review-level data including state (APPROVED, CHANGES_REQUESTED, etc.)
+ * @param {number} prNumber - Pull request number
+ * @returns {Array} Array of review objects
+ */
+function fetchPRReviews(prNumber) {
+  try {
+    // Use gh api with pagination to fetch all reviews
+    const reviewsRaw = execSync(
+      `gh api repos/{owner}/{repo}/pulls/${prNumber}/reviews --paginate`,
+      { encoding: "utf8" },
+    );
+    return JSON.parse(reviewsRaw);
+  } catch (err) {
+    console.error(`Error fetching reviews: ${err.message}`);
+    return [];
+  }
+}
+
+/**
+ * Fetch PR review comments using gh api directly
+ * Gets line-specific comments with more detailed information
+ * @param {number} prNumber - Pull request number
+ * @returns {Array} Array of review comment objects
+ */
+function fetchPRReviewComments(prNumber) {
+  try {
+    // Use gh api with pagination to fetch all review comments
+    const commentsRaw = execSync(
+      `gh api repos/{owner}/{repo}/pulls/${prNumber}/comments --paginate`,
+      { encoding: "utf8" },
+    );
+    return JSON.parse(commentsRaw);
+  } catch (err) {
+    console.error(`Error fetching review comments: ${err.message}`);
+    return [];
+  }
+}
+
+/**
+ * Extract unresolved threads from API responses
+ * Combines review-level comments and line-specific review comments
+ * @param {Array} reviews - Reviews from gh api
+ * @param {Array} reviewComments - Review comments from gh api
+ * @returns {Array} Array of unresolved thread objects
+ */
+function extractThreadsFromAPI(reviews, reviewComments) {
+  const threads = [];
+
+  // Process line-specific review comments (these are the actual code comments)
+  for (const comment of reviewComments) {
+    // Skip comments without body
+    if (!comment.body) continue;
+
+    // Check if this comment is part of a resolved conversation
+    // Note: GitHub's API doesn't always provide a direct "resolved" field
+    // We'll include all comments and let the user handle resolution
+
+    threads.push({
+      id: comment.id,
+      author: comment.user.login,
+      filePath: comment.path,
+      line: comment.line || comment.original_line || null,
+      body: comment.body,
+      reviewId: comment.pull_request_review_id,
+      createdAt: comment.created_at,
+      updatedAt: comment.updated_at,
+      inReplyTo: comment.in_reply_to_id,
+      // Additional metadata from gh api
+      diffHunk: comment.diff_hunk,
+      position: comment.position,
+      originalPosition: comment.original_position,
+    });
+  }
+
+  return threads;
+}
+
+/**
+ * Extract unresolved threads from PR reviews (legacy method)
+ * Kept for backwards compatibility with gh pr view
  */
 function extractThreads(reviews) {
   const threads = [];
   for (const review of reviews) {
+    if (!review || !Array.isArray(review.comments)) continue;
     for (const comment of review.comments) {
       if (comment.state === "RESOLVED" || !comment.body) continue;
       threads.push({
         id: comment.id,
-        author: review.author.login,
+        author: review?.author?.login || "unknown",
         filePath: comment.path,
         line: comment.line || 1,
         body: comment.body,
@@ -147,14 +250,20 @@ function levenshteinDistance(a, b) {
     for (let j = 1; j <= n; j++) {
       const cost = a[i - 1] === b[j - 1] ? 0 : 1;
       dp[i][j] = Math.min(
-        dp[i - 1][j] + 1,       // deletion
-        dp[i][j - 1] + 1,       // insertion
-        dp[i - 1][j - 1] + cost // substitution
+        dp[i - 1][j] + 1, // deletion
+        dp[i][j - 1] + 1, // insertion
+        dp[i - 1][j - 1] + cost, // substitution
       );
     }
   }
 
   return dp[m][n];
+}
+
+function isNotCommonEnglishWord(part) {
+  return !/^(the|and|but|for|not|you|all|can|had|her|was|one|our|out|are|has|his|how|its|may|use|way|who|did|get|let|say|she|too|with|this|that|from|have|will|been|each|make|like|just|over|such|take|than|them|very|when|come|could|into|some|then|what|your|also|back|been|much|only|they|well|about|after|being|these|those|would|change|should|rename|replace|instead|update|remove)$/i.test(
+    part,
+  );
 }
 
 /**
@@ -176,15 +285,48 @@ function extractSymbols(context) {
 
   // Filter out common JS keywords that aren't meaningful symbols
   const keywords = new Set([
-    "const", "let", "var", "function", "return", "if", "else", "for",
-    "while", "do", "switch", "case", "break", "continue", "new", "this",
-    "class", "extends", "import", "export", "default", "from", "async",
-    "await", "try", "catch", "finally", "throw", "typeof", "instanceof",
-    "void", "delete", "in", "of", "true", "false", "null", "undefined",
+    "const",
+    "let",
+    "var",
+    "function",
+    "return",
+    "if",
+    "else",
+    "for",
+    "while",
+    "do",
+    "switch",
+    "case",
+    "break",
+    "continue",
+    "new",
+    "this",
+    "class",
+    "extends",
+    "import",
+    "export",
+    "default",
+    "from",
+    "async",
+    "await",
+    "try",
+    "catch",
+    "finally",
+    "throw",
+    "typeof",
+    "instanceof",
+    "void",
+    "delete",
+    "in",
+    "of",
+    "true",
+    "false",
+    "null",
+    "undefined",
   ]);
 
   const unique = [...new Set(matches)].filter(
-    (sym) => !keywords.has(sym) && sym.length > 1
+    (sym) => !keywords.has(sym) && sym.length > 1,
   );
 
   return unique;
@@ -212,8 +354,6 @@ function extractTokensFromComment(comment) {
     }
   }
 
-  // Extract bare camelCase, snake_case, or dot-notation tokens outside backticks
-  const barePattern = /\b([a-zA-Z_$][a-zA-Z0-9_$]*(?:\.[a-zA-Z_$][a-zA-Z0-9_$]*)*)\b/g;
   while ((match = barePattern.exec(comment)) !== null) {
     const parts = match[1].split(".");
     for (const part of parts) {
@@ -221,7 +361,7 @@ function extractTokensFromComment(comment) {
         /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(part) &&
         part.length > 2 &&
         // Exclude common English words
-        !/^(the|and|but|for|not|you|all|can|had|her|was|one|our|out|are|has|his|how|its|may|use|way|who|did|get|let|say|she|too|with|this|that|from|have|will|been|each|make|like|just|over|such|take|than|them|very|when|come|could|into|some|then|what|your|also|back|been|much|only|they|well|about|after|being|these|those|would|change|should|rename|replace|instead|update|remove)$/i.test(part)
+        isNotCommonEnglishWord(part)
       ) {
         tokens.add(part);
       }
@@ -253,7 +393,7 @@ function findFuzzySymbolMatches(tokens, symbols) {
       // Adaptive threshold: scale with the shorter string's length
       const maxAllowed = Math.min(
         LEVENSHTEIN_THRESHOLD,
-        Math.floor(Math.min(token.length, symbol.length) / 2)
+        Math.floor(Math.min(token.length, symbol.length) / 2),
       );
 
       // Quick length-based pre-filter to skip obviously unrelated pairs
@@ -261,7 +401,7 @@ function findFuzzySymbolMatches(tokens, symbols) {
 
       const dist = levenshteinDistance(
         token.toLowerCase(),
-        symbol.toLowerCase()
+        symbol.toLowerCase(),
       );
 
       if (dist > 0 && dist <= maxAllowed && dist < bestDistance) {
@@ -296,23 +436,25 @@ function findFuzzySymbolMatches(tokens, symbols) {
 async function analyzeThread(thread, context, fuzzyMatches = []) {
   console.log(
     "[LLM Analysis Required]\n" +
-    "Using Liskov Substitution Principle, determine if this feedback is actionable.\n" +
-    "Consider: typos, symbol existence, function contracts, scope.\n"
+      "Using Liskov Substitution Principle, determine if this feedback is actionable.\n" +
+      "Consider: typos, symbol existence, function contracts, scope.\n",
   );
 
   if (fuzzyMatches.length > 0) {
     console.log(
       "[Levenshtein Hint] The following reviewer tokens are likely typos.\n" +
-      "Use the corrected symbols when evaluating the feedback:\n"
+        "Use the corrected symbols when evaluating the feedback:\n",
     );
     for (const m of fuzzyMatches) {
-      console.log(`  Reviewer wrote: "${m.token}" → Likely meant: "${m.symbol}" (edit distance: ${m.distance})`);
+      console.log(
+        `  Reviewer wrote: "${m.token}" → Likely meant: "${m.symbol}" (edit distance: ${m.distance})`,
+      );
     }
     console.log();
   }
 
   const decision = await rl.question(
-    "Is this feedback actionable? (y/n/skip): "
+    "Is this feedback actionable? (y/n/skip): ",
   );
 
   if (decision.toLowerCase() === "skip") {
@@ -321,9 +463,7 @@ async function analyzeThread(thread, context, fuzzyMatches = []) {
 
   if (decision.toLowerCase() === "y") {
     const patch = await rl.question("Enter the corrected code:\n> ");
-    const explanation = await rl.question(
-      "Brief explanation of the fix:\n> "
-    );
+    const explanation = await rl.question("Brief explanation of the fix:\n> ");
     return {
       isActionable: true,
       patch,
@@ -331,7 +471,7 @@ async function analyzeThread(thread, context, fuzzyMatches = []) {
     };
   } else {
     const reply = await rl.question(
-      "Draft an empathetic clarification question:\n> "
+      "Draft an empathetic clarification question:\n> ",
     );
     return {
       isActionable: false,
@@ -341,16 +481,57 @@ async function analyzeThread(thread, context, fuzzyMatches = []) {
 }
 
 /**
- * Apply a local patch to a file
+ * Apply a local patch to a file using diff-match-patch
+ * @param {string} filePath - Path to the file to patch
+ * @param {string} newContent - The new/corrected content to apply
  */
-function applyLocalFix(filePath, patch) {
+function applyLocalFix(filePath, newContent) {
   try {
-    // For now, just log that the patch was applied
-    // In production, use a proper diff/patch library to intelligently apply changes
-    console.log(`[APPLIED] Patch applied to ${filePath}\n`);
-    // TODO: Implement intelligent patching (diff-match-patch, etc.)
+    if (!fs.existsSync(filePath)) {
+      console.error(`[ERROR] File not found: ${filePath}\n`);
+      return;
+    }
+
+    // Read the current file content
+    const originalContent = fs.readFileSync(filePath, "utf8");
+
+    // Initialize diff-match-patch
+    const dmp = new DiffMatchPatch();
+
+    // Create a diff between the original content and the new content
+    const diffs = dmp.diff_main(originalContent, newContent);
+
+    // Clean up the diffs for semantic clarity
+    dmp.diff_cleanupSemantic(diffs);
+
+    // Create patches from the diffs
+    const patches = dmp.patch_make(originalContent, diffs);
+
+    // Apply the patches
+    const [patchedContent, results] = dmp.patch_apply(patches, originalContent);
+
+    // Check if all patches were applied successfully
+    const allSuccessful = results.every((result) => result === true);
+
+    if (allSuccessful) {
+      // Write the patched content back to the file
+      fs.writeFileSync(filePath, patchedContent, "utf8");
+      console.log(`[APPLIED] Patch successfully applied to ${filePath}\n`);
+    } else {
+      // Some patches failed - report which ones
+      const failedCount = results.filter((r) => !r).length;
+      console.warn(
+        `[PARTIAL] ${results.length - failedCount}/${results.length} patches applied to ${filePath}`,
+      );
+      console.warn(
+        `Some patches could not be applied cleanly. Manual review recommended.\n`,
+      );
+
+      // Still write the partially patched content
+      fs.writeFileSync(filePath, patchedContent, "utf8");
+    }
   } catch (err) {
-    console.error(`Error applying patch: ${err.message}`);
+    console.error(`[ERROR] Failed to apply patch: ${err.message}\n`);
   }
 }
 
@@ -362,12 +543,13 @@ function copyToClipboard(text) {
     if (process.platform === "darwin") {
       execSync(`echo "${text.replace(/"/g, '\\"')}" | pbcopy`);
     } else if (process.platform === "linux") {
-      execSync(`echo "${text.replace(/"/g, '\\"')}" | xclip -selection clipboard`);
-    } else if (process.platform === "win32") {
       execSync(
-        `echo "${text.replace(/"/g, '\\"')}" | clip`,
-        { shell: "cmd.exe" }
+        `echo "${text.replace(/"/g, '\\"')}" | xclip -selection clipboard`,
       );
+    } else if (process.platform === "win32") {
+      execSync(`echo "${text.replace(/"/g, '\\"')}" | clip`, {
+        shell: "cmd.exe",
+      });
     }
   } catch {
     console.log("(Clipboard not available on this system)\n");
