@@ -1,5 +1,3 @@
-# Template Skill (Example)
-
 ---
 name: template-skill
 description: Use as a starting point for new skills. Trigger when you need to scaffold a fresh skill with clear inputs, outputs, and workflow guidance.

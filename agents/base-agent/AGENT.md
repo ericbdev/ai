@@ -1,5 +1,3 @@
-# Base Agent
-
 ---
 name: base-agent
 description: Abstract framework for implementing AI agents with skill management capabilities. Use as a reference for understanding agent structure and creating custom agents.

@@ -1,5 +1,3 @@
-# Simple Agent
-
 ---
 name: simple-agent
 description: A basic conversational agent that can process messages, execute tasks, and leverage multiple skills. Use when you need a general-purpose agent that responds to queries and performs skill-based task execution.
