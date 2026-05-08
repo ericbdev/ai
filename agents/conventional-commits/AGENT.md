@@ -37,7 +37,7 @@ When you ask for help creating a commit:
 
 Load specialized skills only when needed to minimize context usage:
 
-- **Load `conventional-commits-reference`** when you need to:
+- **Load `conventional-commit`** when you need to:
   - Determine the correct commit type from staged changes
   - Format a commit message (type, scope, subject, body, footer)
   - Detect or link issue references

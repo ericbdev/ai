@@ -1,5 +1,5 @@
 ---
-name: conventional-commits-reference
+name: conventional-commit
 description: Conventional commit format specification, type definitions, scope conventions, and message formatting rules. Load when crafting, classifying, or validating conventional commit messages.
 ---
 

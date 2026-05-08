@@ -9,12 +9,12 @@ A subagent for [OpenCode](https://opencode.ai) that analyzes staged git changes 
 
 ## Skills
 
-This agent relies on the **conventional-commits-reference** skill for commit type classification, message formatting rules, and analysis heuristics. The skill is co-located in this repo at [`skills/conventional-commits-reference`](../../skills/conventional-commits-reference/).
+This agent relies on the **conventional-commit** skill for commit type classification, message formatting rules, and analysis heuristics. The skill is co-located in this repo at [`skills/conventional-commit`](../../skills/conventional-commit/).
 
 Install the skill into your project before using the agent:
 
 ```sh
-npx skills add ericbdev/ai --skill conventional-commits-reference
+npx skills add ericbdev/ai --skill conventional-commit
 ```
 
 ## Installation
