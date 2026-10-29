@@ -15,8 +15,10 @@ On Windows, git may check the `.claude/skills` symlink out as a plain file. Enab
 
 ## Adding things
 
-- **A rule:** edit `AGENTS.md`. Nothing else, unless it is one of the Python review checks in `.github/instructions/python.instructions.md`, which repeats only the checks a change most often breaks.
-- **A skill:** add `.agents/skills/<name>/SKILL.md` with `name` (equal to the folder name) and `description` (what it does and when to use it) in its frontmatter. Every tool sees it.
+- **Any of these:** write it the way [writing-for-agents](https://github.com/mattpocock/skills/blob/main/skills/productivity/writing-for-agents/SKILL.md) describes: every always-loaded line earns its place, a pointer says when to follow it, material only some tasks need sits behind a pointer, each meaning lives in one place, and rules state the behaviour you want.
+- **A rule:** edit `AGENTS.md` if every task needs it, or the doc it applies to if only some do (a context README, `docs/external-calls.md`). The Python checks in `.github/instructions/python.instructions.md` are a deliberate copy for Copilot code review; update them when those rules change.
+- **A term:** add it to `GLOSSARY.md`, with the synonyms to avoid.
+- **A skill:** add `.agents/skills/<name>/SKILL.md` with `name` (equal to the folder name) and `description` (its trigger cases, front-loaded) in its frontmatter, and steps that each end on a checkable condition. Every tool sees it.
 - **An MCP server:** add it to `.mcp.json` (`mcpServers`) and to `.codex/config.toml` (`[mcp_servers.<name>]`) in the same change. Servers that need a person's credentials (GitHub, a tracker) go in that person's user configuration instead, never in the repository.
 
 ## MCP servers

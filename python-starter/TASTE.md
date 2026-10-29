@@ -40,7 +40,7 @@ The engineering taste this starter encodes, for any Python project whatever its 
 20. **A tech-debt register** with ID, severity, *how it was verified* ("read in code; not run" vs "reproduced in a test"), and when to fix it.
 21. **Adversarial review in rounds** before merging risky work, with each finding verified in code or by a run before it is acted on.
 22. **Tuning with frozen labels:** any heuristic is evaluated on a fixed labelled set with a spend plan, and the history of what was tried is kept.
-23. **Plain, precise prose.** Short declarative rules, the reason next to the rule, a glossary the code uses. Commit titles are sentences that say what changed and why.
+23. **Write for the agent.** Short declarative rules stated as the behaviour you want, pointers that say when to follow them, a glossary the code uses, and every always-loaded line earning its place ([writing-for-agents](https://github.com/mattpocock/skills/blob/main/skills/productivity/writing-for-agents/SKILL.md)). Commit titles are sentences that say what changed and why.
 
 ## Where these habits cost more than they return
 

@@ -1,16 +1,15 @@
 ---
 name: new-context
-description: Add a new bounded context to this Python package the way ADR 0002 requires - package, layers, ports, fakes, README and agent notes. Use when a feature has its own language and rules and does not belong to an existing context.
+description: Adds a bounded context to src/starter. Use when a feature brings its own nouns and rules, when code fits no existing context, or when the user asks for a new context or module area.
 ---
 
-# New bounded context
+The rules this skill applies are in `AGENTS.md` (Placing code, Boundaries); read them first.
 
-1. **Check it is a context.** It has its own nouns and its own rules, and usually a port of its own. If it is a helper for one context, put it in that context. If two contexts need it, it is a shared-kernel module, not a context.
-2. **Create the package** `src/starter/<context>/` with `__init__.py`, and only the layers it needs:
-   - `domain/` for rules: pure functions and frozen dataclasses, the context's error class (`<Context>Error(DomainError)`) and one subclass per refusal.
-   - `application/ports.py` for the `Protocol`s it calls, and `application/service.py` (or a module per use case) for the code that arranges them.
-3. **Write the domain tests first** (`tests/domain/test_<concept>.py`), with hand-built inputs. Name each test for the behaviour.
-4. **Adapters:** for each new port, an in-memory adapter in `adapters/outbound/`, the real one, and a contract suite both pass (ADR 0004). Wire them in `bootstrap.py` only.
-5. **Document:** `src/starter/<context>/README.md` in the shape of `example/README.md` (what it owns, takes and hands over, ports, every module by layer), and a row in the context table in `AGENTS.md` with the package written as `` `<context>/` ``.
-6. **Run** `make check`. `test_architecture.py` and `test_context_docs.py` find the new context by themselves; fix what they report, never the tests.
-7. If the context changes a boundary, a stored format or a cost, record it with the `record-decision` skill.
+1. **Confirm it is a context.** Name its nouns and two of its rules. Done when neither fits an existing context's README and the code is more than a helper for one context (a helper stays in that context).
+2. **Write the domain tests** in `tests/domain/test_<concept>.py` with hand-built inputs, one test per rule and per refusal. Done when every rule you named fails its test.
+3. **Write the domain** in `src/starter/<context>/domain/`: frozen dataclasses, the context's error under `DomainError`, one class per refusal. Done when the domain tests pass.
+4. **Add each port** to `application/ports.py`, with an in-memory adapter, the real adapter and a contract suite that runs both. Done when the suite passes for every adapter.
+5. **Write the service** in `application/`, with tests that use the in-memory adapters. Done when every use case has a test.
+6. **Wire it** in `bootstrap.py` and the inbound adapter that drives it, with a wire schema there.
+7. **Document it:** `src/starter/<context>/README.md` in the shape of `example/README.md`, a row in the context table of `AGENTS.md` (package written as `` `<context>/` ``), and its terms in `GLOSSARY.md`.
+8. **Check.** Done when `make check` is green; the architecture and docs tests find the context by themselves.

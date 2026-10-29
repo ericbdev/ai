@@ -34,9 +34,8 @@ Review this branch against the boundary rules
 
 ## Workflow
 
-1. Reads `AGENTS.md`, `PRODUCT.md` and the README of each context it will touch
-2. Writes the domain rule and its tests first
-3. Adds the port, a fake and the contract suite entry
-4. Writes the service, then wires the real model adapter
-5. Runs `make check`, updates context READMEs, ADRs and the debt register
-6. Runs an adversarial review for risky changes and reports what it verified
+1. Reads `AGENTS.md` and the README of each context it will touch
+2. Writes the domain tests and rules first
+3. Adds each port with an in-memory adapter, the real adapter and a contract suite
+4. Writes the service, tested on the in-memory adapters
+5. Finishes with the "Before you finish" list in `AGENTS.md` and reports what it verified

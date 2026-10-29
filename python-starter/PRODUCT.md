@@ -1,7 +1,7 @@
 # Product
 
-<!-- Fill this in before the first feature. Agents read it to decide what "good" means. Keep each
-section to a few lines; say "None yet" rather than inventing. -->
+<!-- Fill this in before the first feature. Agents read it when deciding what a feature does.
+Keep each section to a few lines; write "None yet" where nothing is decided. -->
 
 ## Users
 

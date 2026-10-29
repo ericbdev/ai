@@ -10,6 +10,7 @@ It holds no product of its own. One small, deletable `example/` context shows ev
 python-starter/
 ├── AGENTS.md            rules for agents and people; Codex and Copilot read it directly
 ├── CLAUDE.md            "@AGENTS.md": Claude Code reads the same rules
+├── GLOSSARY.md          the words the code uses, and the synonyms to avoid
 ├── TASTE.md             the judgement calls behind the rules, and their costs
 ├── PRODUCT.md           who it is for and what good means (fill in first)
 ├── pyproject.toml       uv, ruff (annotations on inner rings), ty, pytest
@@ -28,6 +29,7 @@ python-starter/
 │   ├── adr/             0001 record decisions · 0002 contexts then layers
 │   │                    0003 config from the environment · 0004 every port has a contract suite
 │   ├── agents.md        how each agent finds the rules, skills and MCP servers
+│   ├── external-calls.md the steps for a call that leaves the process
 │   └── tech-debt.md     shortcuts we chose to leave
 ├── scripts/rename_package.py
 ├── src/starter/
@@ -71,7 +73,7 @@ You need [uv](https://docs.astral.sh/uv/getting-started/installation/) and git. 
    make rename NAME=my_app && uv sync && make check
    ```
 
-4. **Say what you are building.** Fill in `PRODUCT.md`, then the *Product objectives*, *Non-goals* and *Glossary* of `AGENTS.md`. Keep them short. Date the four ADRs (replace `YYYY-MM-DD`) and keep or supersede each.
+4. **Say what you are building.** Fill in `PRODUCT.md`, the *Product objectives* of `AGENTS.md`, and your first terms in `GLOSSARY.md`. Keep them short. Date the four ADRs (replace `YYYY-MM-DD`) and keep or supersede each.
 
 5. **Set up your agent.** Build the code graph once (`uvx code-review-graph build`), then open the folder in your tool:
    - **Claude Code:** run `claude` in the folder and approve the project MCP server when asked. It reads `CLAUDE.md` and `.claude/skills`.

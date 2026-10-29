@@ -1,11 +1,11 @@
 # Example context
 
-**Delete this context when you add your first real one**, with its tests and its rows in `AGENTS.md`, `bootstrap.py` and `adapters/` (`memory.py`, `json_file.py`, `system_clock.py`, `inbound/cli.py`). It is here to show every pattern the rules ask for, in the smallest code that runs:
+**Delete this context when you add your first real one**, with its tests, its rows in `AGENTS.md` and `GLOSSARY.md`, and its code in `bootstrap.py` and `adapters/` (`memory.py`, `json_file.py`, `system_clock.py`, `inbound/cli.py`). It is here to show every pattern the rules ask for, in the smallest code that runs:
 
 - a pure aggregate whose changes return a new value and whose refusals are named errors;
 - a service that arranges ports and holds no rule;
 - ports owned by the context, each with an in-memory and a durable adapter that pass one contract suite;
-- a clock behind a port, so the domain never reads the time;
+- a clock behind a port, so the domain receives the time as an argument;
 - a driving adapter (the CLI) with its own output schema.
 
 Its subject is a task that is opened and then completed.
