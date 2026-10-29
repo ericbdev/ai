@@ -1,0 +1,6 @@
+# Codex project settings (used when you trust this project). Keep the MCP servers here in step
+# with .mcp.json, which Claude Code and VS Code read; tests/test_agent_setup.py checks it.
+
+[mcp_servers.code-review-graph]
+command = "uvx"
+args = ["code-review-graph", "serve"]

@@ -33,6 +33,12 @@ See [simple-agent/AGENT.md](./simple-agent/AGENT.md) for the complete specificat
 - Provide help and capability discovery
 - Handle greetings, help requests, and general queries
 
+### 3. Python Engineer
+
+Builds and reviews Python services in the style of [python-starter](../python-starter/README.md): bounded contexts, gates as tests, throwaway defaults, every port with a fake that passes the real adapter's contract suite.
+
+See [python-engineer/README.md](./python-engineer/README.md) and [AGENT.claude.md](./python-engineer/AGENT.claude.md).
+
 ## Agent Structure
 
 Agent definitions follow the standard markdown format with YAML frontmatter:
@@ -109,7 +115,7 @@ interface AgentTask {
 
 To create a custom agent:
 
-1. **Create an agent directory** in `src/agents/your-agent/`
+1. **Create an agent directory** in `agents/your-agent/`
 2. **Create an AGENT.md file** with frontmatter and instructions
 3. **Define clear purpose and capabilities** in the overview
 4. **Document behaviors and usage patterns** with examples

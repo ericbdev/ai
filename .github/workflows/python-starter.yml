@@ -1,0 +1,37 @@
+name: python-starter
+
+on:
+  pull_request:
+    paths: ["python-starter/**", ".github/workflows/python-starter.yml"]
+  push:
+    branches: [main]
+    paths: ["python-starter/**", ".github/workflows/python-starter.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: python-starter
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: python-starter/uv.lock
+      - run: uv sync --frozen
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run ty check
+      - run: uv run pytest -q
+      - run: uv run starter add "Smoke test"
+      # The rename a fresh project runs first must keep everything green.
+      - name: Rename on a copy
+        run: |
+          cp -r . "$RUNNER_TEMP/renamed" && cd "$RUNNER_TEMP/renamed"
+          rm -rf .venv
+          uv run --no-project python scripts/rename_package.py my_app
+          uv sync && uv run pytest -q && uv run my-app add "Smoke test"

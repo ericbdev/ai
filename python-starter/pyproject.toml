@@ -1,0 +1,57 @@
+[project]
+name = "starter"
+version = "0.1.0"
+description = "Replace me: one sentence on what this service does for whom."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+]
+
+[project.scripts]
+starter = "starter.adapters.inbound.cli:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "ruff>=0.7",
+    "ty>=0.0.1a20",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/starter"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "ANN"]
+ignore = ["ANN401"]
+
+# Annotations are required on every domain and application layer (ruff ANN). ``Any`` is allowed
+# where a value really is untyped (a JSON payload, a validator's raw input), so ANN401 stays off.
+[tool.ruff.lint.per-file-ignores]
+"!src/starter/*/{domain,application}/**" = ["ANN"]
+
+# The type gate (`make typecheck`, CI): ty over the whole package, warnings as errors.
+[tool.ty.src]
+include = ["src"]
+
+[tool.ty.terminal]
+error-on-warning = true
+
+# When you adopt the gate on existing code, list the files that fail it here, with the date.
+# The list only shrinks: fix a file and delete its line; never add one.
+# [[tool.ty.overrides]]
+# include = []
+# [tool.ty.overrides.rules]
+# all = "ignore"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

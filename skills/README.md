@@ -49,6 +49,10 @@ See [template-skill/SKILL.md](./template-skill/SKILL.md) for the scaffold struct
 
 **Purpose**: Provides a complete example following the GitHub Copilot skills standard with all recommended sections.
 
+### Project skills in python-starter
+
+[python-starter](../python-starter/README.md) ships three skills in `.agents/skills/` that travel with a new project and that Claude Code, Codex and Copilot all load: `new-context` (add a bounded context), `record-decision` (write an ADR) and `adversarial-review` (review in verified rounds). Promote one here when a second project needs it.
+
 ## Skill File Structure
 
 Each skill should be in its own directory with a `SKILL.md` file:
@@ -89,7 +93,7 @@ Usage example
 
 To create a new skill:
 
-1. **Create a directory** in `src/skills/your-skill/`
+1. **Create a directory** in `skills/your-skill/`
 2. **Copy the template** from [template-skill/SKILL.md](./template-skill/SKILL.md)
 3. **Update the frontmatter** with your skill's name and trigger description
 4. **Document the behavior** clearly in the markdown body
