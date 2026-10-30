@@ -10,24 +10,28 @@ This repository provides documented agents and skills that AI assistants can use
 - **Agents**: Behavior definitions and orchestration patterns in markdown format
 - **Templates**: Reusable templates for creating new skills and agents
 
+## Start here
+
+**Starting a Python project?** Copy [`python-starter/`](python-starter/README.md): a domain-agnostic, runnable base for a developer working with Claude Code, Codex or GitHub Copilot, with one set of agent instructions (`AGENTS.md`), skills and MCP servers that all three read, ADRs, type and boundary gates as tests, and a deletable example context. Its [`TASTE.md`](python-starter/TASTE.md) records the engineering judgement it encodes and where those habits cost more than they return. The [Fresh start](python-starter/README.md#fresh-start) section walks an engineer from an empty folder to a green `make check` and a first real context.
+
 ## Structure
 
 ```
-src/
-├── skills/              # Skill documentation (SKILL.md files)
-│   ├── text-analysis-skill/
-│   │   └── SKILL.md
-│   ├── code-formatter-skill/
-│   │   └── SKILL.md
-│   ├── template-skill/   # Template for new skills
-│   │   └── SKILL.md
-│   └── README.md
-└── agents/              # Agent documentation (AGENT.md files)
-    ├── base-agent/
-    │   └── AGENT.md
-    ├── simple-agent/
-    │   └── AGENT.md
-    └── README.md
+agents/                  # Agent definitions (AGENT.md / AGENT.claude.md)
+├── base-agent/
+├── simple-agent/
+├── conventional-commits/
+├── orchestrator/
+├── pr-review/
+├── python-engineer/     # builds and reviews services in the python-starter style
+└── README.md
+skills/                  # Skill documentation (SKILL.md files)
+├── code-formatter-skill/
+├── conventional-commit/
+├── template-skill/
+├── text-analysis-skill/
+└── README.md
+python-starter/          # base for any Python project: copy it, rename it, build on it
 ```
 
 ## Skills
@@ -40,7 +44,7 @@ Skills are documented capabilities that define specific tasks AI assistants can 
 2. **Code Formatter Skill** - Format and beautify code (JSON, JavaScript, etc.)
 3. **Template Skill** - Starter template for creating new skills
 
-See [Skills Documentation](src/skills/README.md) for complete details.
+See [Skills Documentation](skills/README.md) for complete details.
 
 ### Skill Format
 
@@ -71,20 +75,21 @@ Agents define behavior patterns and how to orchestrate multiple skills to accomp
 
 1. **Base Agent** - Framework documentation for understanding agent structure
 2. **Simple Agent** - Basic conversational agent pattern
+3. **Python Engineer** - Builds and reviews Python services to the [python-starter](python-starter/README.md) rules ([agent](agents/python-engineer/README.md))
 
-See [Agents Documentation](src/agents/README.md) for complete details.
+See [Agents Documentation](agents/README.md) for complete details.
 
 ## Creating New Skills
 
-1. Copy the template from `src/skills/template-skill/SKILL.md`
-2. Create a new directory: `src/skills/your-skill/`
+1. Copy the template from `skills/template-skill/SKILL.md`
+2. Create a new directory: `skills/your-skill/`
 3. Update the YAML frontmatter with your skill's name and description
 4. Document the skill's behavior, inputs, and outputs
 5. Add usage examples
 
 ## Creating New Agents
 
-1. Create a new directory: `src/agents/your-agent/`
+1. Create a new directory: `agents/your-agent/`
 2. Create an `AGENT.md` file with YAML frontmatter
 3. Document the agent's purpose, capabilities, and behaviors
 4. Provide usage examples and patterns
@@ -102,7 +107,7 @@ This repository follows these standards:
 
 ### Prerequisites
 
-This is a documentation repository - no build tools are required. All files are markdown.
+The agent and skill files are markdown and need no build tools. [`python-starter/`](python-starter/README.md) is a Python project with its own toolchain (uv, ruff, ty, pytest); CI checks it in `.github/workflows/python-starter.yml`.
 
 ### Testing Documentation
 
@@ -122,6 +127,7 @@ npm run lint  # Checks markdown formatting
 - [x] Simple agent pattern documentation
 - [ ] Additional skill documentation (summarization, translation, etc.)
 - [ ] Advanced agent patterns with planning
+- [x] Python project starter (`python-starter/`)
 - [ ] Prompt templates library
 - [ ] Workflow automation skills
 
